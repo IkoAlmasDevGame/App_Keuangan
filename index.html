@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="id">
+
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      <title>KeuanganKu - Professional Finance App</title>
+
+      <!-- Google Fonts: Plus Jakarta Sans & Poppins -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link rel="manifest" href="manifest.json">
+      <link rel="stylesheet" href="style.css">
+      <link rel="shortcut icon" href="icons/AppKeuanganku.png" type="image/png">
+
+      <meta name="description"
+         content="KeuanganKu adalah aplikasi keuangan untuk membantu mencatat pemasukan, pengeluaran, mengatur anggaran, dan memantau kondisi keuangan secara mudah, cepat, dan praktis.">
+      <meta name="keywords"
+         content="KeuanganKu, aplikasi keuangan, aplikasi keuangan pribadi, aplikasi pencatatan keuangan, pencatatan pemasukan, pencatatan pengeluaran, manajemen keuangan, pengelola keuangan, keuangan pribadi, laporan keuangan, aplikasi kas pribadi, budgeting, anggaran keuangan, catatan keuangan">
+
+      <link
+         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+         rel="stylesheet">
+
+      <!-- FontAwesome & Chart.js -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <!-- Tailwind CSS -->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+         tailwind.config = {
+            theme: {
+               extend: {
+                  fontFamily: {
+                     'jakarta': ['"Plus Jakarta Sans"', 'sans-serif'],
+                     'poppins': ['"Poppins"', 'sans-serif'],
+                  },
+                  colors: {
+                     brand: {
+                        50: '#EEF2FF',
+                        100: '#E0E7FF',
+                        500: '#6366F1',
+                        600: '#4F46E5', // Primary
+                        700: '#4338CA',
+                        800: '#3730A3', // Darker shadow
+                        900: '#312E81',
+                     },
+                     success: '#10B981',
+                     successDark: '#047857',
+                     danger: '#F43F5E',
+                     dangerDark: '#BE123C',
+                  }
+               }
+            }
+         }
+      </script>
+
+      <style>
+         /* Awwwards Premium Background */
+         body {
+            background-color: #F8FAFC;
+            background-image:
+               radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0, transparent 50%),
+               radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.04) 0, transparent 50%),
+               radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.04) 0, transparent 50%);
+            background-attachment: fixed;
+            color: #1E293B;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+         }
+
+         /* Glassmorphism Cards */
+         .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
+            border-radius: 1.5rem;
+            /* 24px */
+         }
+
+         /* Depth Effect Buttons (Properly Scaled) */
+         .btn-depth-primary {
+            background: linear-gradient(180deg, #6366F1 0%, #4F46E5 100%);
+            border: 1px solid #4338CA;
+            box-shadow: 0px 5px 0px #3730A3, 0px 10px 15px -3px rgba(79, 70, 229, 0.4), inset 0px 1px 1px rgba(255, 255, 255, 0.3);
+            transform: translateY(0);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            position: relative;
+         }
+
+         .btn-depth-primary:active {
+            transform: translateY(5px);
+            box-shadow: 0px 0px 0px #3730A3, 0px 4px 6px -2px rgba(79, 70, 229, 0.3), inset 0px 2px 3px rgba(0, 0, 0, 0.2);
+         }
+
+         .btn-depth-danger {
+            background: linear-gradient(180deg, #FB7185 0%, #F43F5E 100%);
+            border: 1px solid #E11D48;
+            box-shadow: 0px 5px 0px #BE123C, 0px 10px 15px -3px rgba(244, 63, 94, 0.4), inset 0px 1px 1px rgba(255, 255, 255, 0.3);
+            transform: translateY(0);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+         }
+
+         .btn-depth-danger:active {
+            transform: translateY(5px);
+            box-shadow: 0px 0px 0px #BE123C, 0px 4px 6px -2px rgba(244, 63, 94, 0.3), inset 0px 2px 3px rgba(0, 0, 0, 0.2);
+         }
+
+         /* Neumorphic Form Inputs */
+         .neu-input {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            box-shadow: inset 0 2px 4px 0 rgba(15, 23, 42, 0.02);
+            transition: all 0.25s ease;
+         }
+
+         .neu-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 2px 4px 0 rgba(15, 23, 42, 0.02);
+         }
+
+         /* Hide Number Input Arrows */
+         input[type="number"]::-webkit-outer-spin-button,
+         input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+         }
+
+         input[type="number"] {
+            -moz-appearance: textfield;
+         }
+
+         /* Custom Scrollbar */
+         ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+         }
+
+         ::-webkit-scrollbar-track {
+            background: transparent;
+         }
+
+         ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+         }
+
+         ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+         }
+
+         /* View Transitions */
+         .view-section {
+            display: none;
+            opacity: 0;
+         }
+
+         .view-section.active {
+            display: block;
+            opacity: 1;
+            animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+         }
+
+         @keyframes fadeInSlideUp {
+            from {
+               opacity: 0;
+               transform: translateY(15px);
+            }
+
+            to {
+               opacity: 1;
+               transform: translateY(0);
+            }
+         }
+
+         /* Loading Spinner */
+         .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: none;
+         }
+
+         .loading .loader {
+            display: inline-block;
+         }
+
+         .loading .btn-text {
+            display: none;
+         }
+
+         @keyframes spin {
+            0% {
+               transform: rotate(0deg);
+            }
+
+            100% {
+               transform: rotate(360deg);
+            }
+         }
+      </style>
+   </head>
+
+   <body class="font-jakarta text-slate-800">
+
+      <div id="installBanner" class="install-banner" style="display: none;">
+         <p>Install App KeuanganKu for a better experience!</p>
+         <button id="installBtn">Install Now</button>
+         <button id="dismissBtn" onclick="this.parentNode.style.display='none'">Maybe Later</button>
+      </div>
+
+      <!-- Global Toast Notification -->
+      <div id="toast"
+         class="fixed top-6 right-6 transform translate-x-[150%] opacity-0 transition-all duration-400 ease-out z-[100]">
+         <div
+            class="glass-card px-5 py-3 md:px-6 md:py-4 flex items-center gap-3 border-l-4 border-brand-500 shadow-xl">
+            <i class="fas fa-info-circle text-brand-500 text-lg md:text-xl"></i>
+            <span id="toast-msg" class="font-semibold text-sm md:text-base text-slate-700">Notifikasi</span>
+         </div>
+      </div>
+
+      <!-- 1. AUTHENTICATION VIEW -->
+      <div id="auth-view" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+         <!-- Ambient Glow -->
+         <div
+            class="absolute w-[400px] h-[400px] bg-brand-400/20 rounded-full blur-[80px] -top-20 -left-20 z-0 pointer-events-none">
+         </div>
+
+         <div class="w-full max-w-[420px] relative z-10">
+            <!-- Login Form -->
+            <div id="login-card" class="glass-card p-8 sm:p-10 transition-all duration-300">
+               <div class="text-center mb-8">
+                  <div
+                     class="w-14 h-14 bg-gradient-to-br from-brand-500 to-brand-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-500/30 mx-auto mb-5">
+                     <img src="icons/AppKeuanganku.png" alt="">
+                  </div>
+                  <h1 class="font-poppins font-bold text-2xl sm:text-3xl text-slate-800 tracking-tight">KeuanganKu</h1>
+                  <p class="text-slate-500 mt-2 text-sm sm:text-base">Kelola finansial bulanan dengan cerdas</p>
+               </div>
+
+               <form id="login-form" class="space-y-5">
+                  <div>
+                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Email</label>
+                     <input type="email" id="login-email" required placeholder="akun@email.com"
+                        class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 text-sm sm:text-base font-medium">
+                  </div>
+                  <div>
+                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
+                     <input type="password" id="login-password" required placeholder="••••••••"
+                        class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 text-sm sm:text-base font-medium">
+                  </div>
+                  <button type="submit" id="btn-login"
+                     class="btn-depth-primary w-full py-3.5 rounded-xl font-poppins font-semibold text-base sm:text-lg mt-6 flex items-center justify-center gap-2">
+                     <span class="btn-text">Masuk</span>
+                     <div class="loader"></div>
+                  </button>
+               </form>
+               <p class="text-center mt-6 text-slate-500 text-sm font-medium">
+                  Belum punya akun? <button onclick="toggleAuth()"
+                     class="text-brand-600 hover:text-brand-800 font-bold transition-colors">Daftar sekarang</button>
+               </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-card" class="glass-card p-8 sm:p-10 hidden transition-all duration-300">
+               <div class="text-center mb-8">
+                  <h2 class="font-poppins font-bold text-2xl text-slate-800 tracking-tight">Buat Akun</h2>
+                  <p class="text-slate-500 mt-1.5 text-sm">Bergabung dan kendalikan keuangan Anda</p>
+               </div>
+
+               <form id="register-form" class="space-y-4">
+                  <div>
+                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Nama Lengkap</label>
+                     <input type="text" id="reg-nama" required placeholder="John Doe"
+                        class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 text-sm sm:text-base font-medium">
+                  </div>
+                  <div>
+                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Email</label>
+                     <input type="email" id="reg-email" required placeholder="akun@email.com"
+                        class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 text-sm sm:text-base font-medium">
+                  </div>
+                  <div>
+                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
+                     <input type="password" id="reg-password" required placeholder="Min. 6 karakter" minlength="6"
+                        class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 text-sm sm:text-base font-medium">
+                  </div>
+                  <button type="submit" id="btn-register"
+                     class="btn-depth-primary w-full py-3.5 rounded-xl font-poppins font-semibold text-base sm:text-lg mt-6 flex items-center justify-center gap-2">
+                     <span class="btn-text">Daftar Akun</span>
+                     <div class="loader"></div>
+                  </button>
+               </form>
+               <p class="text-center mt-6 text-slate-500 text-sm font-medium">
+                  Sudah punya akun? <button onclick="toggleAuth()"
+                     class="text-brand-600 hover:text-brand-800 font-bold transition-colors">Masuk disini</button>
+               </p>
+            </div>
+         </div>
+      </div>
+
+      <!-- 2. MAIN APP LAYOUT -->
+      <div id="app-view" class="h-screen w-full flex hidden">
+
+         <!-- Sidebar Desktop -->
+         <aside
+            class="w-64 lg:w-72 hidden md:flex flex-col bg-white/70 backdrop-blur-xl border-r border-slate-200/50 z-20 flex-shrink-0">
+            <div class="p-6 lg:p-8 flex items-center gap-3">
+               <div
+                  class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center text-white text-lg shadow-md shadow-brand-500/20">
+                  <i class="fas fa-chart-pie"></i>
+               </div>
+               <h1 class="font-poppins font-bold text-xl lg:text-2xl text-slate-800 tracking-tight">KeuanganKu</h1>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+               <button onclick="nav('dashboard')" id="nav-dashboard"
+                  class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-100/80 transition-colors text-left">
+                  <i class="fas fa-home w-5 text-lg text-center"></i> <span>Dashboard</span>
+               </button>
+               <button onclick="nav('input')" id="nav-input"
+                  class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-100/80 transition-colors text-left">
+                  <i class="fas fa-plus-square w-5 text-lg text-center"></i> <span>Input Data</span>
+               </button>
+               <button onclick="nav('history')" id="nav-history"
+                  class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-100/80 transition-colors text-left">
+                  <i class="fas fa-list-alt w-5 text-lg text-center"></i> <span>Riwayat Transaksi</span>
+               </button>
+               <button onclick="nav('reports')" id="nav-reports"
+                  class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-100/80 transition-colors text-left">
+                  <i class="fas fa-chart-bar w-5 text-lg text-center"></i> <span>Laporan & Grafik</span>
+               </button>
+            </nav>
+
+            <div class="p-4 lg:p-6">
+               <div
+                  class="glass-card p-3 flex items-center justify-between border border-slate-200/60 shadow-sm rounded-xl">
+                  <div class="flex items-center gap-3 overflow-hidden">
+                     <div
+                        class="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold font-poppins shrink-0"
+                        id="user-avatar">A</div>
+                     <div class="truncate">
+                        <p class="text-sm font-bold text-slate-800 truncate" id="display-nama">User</p>
+                        <p class="text-xs text-slate-500 truncate" id="display-email">email</p>
+                     </div>
+                  </div>
+                  <button onclick="logout()"
+                     class="text-slate-400 hover:text-danger shrink-0 p-2 transition-colors rounded-lg hover:bg-rose-50"
+                     title="Keluar">
+                     <i class="fas fa-sign-out-alt"></i>
+                  </button>
+               </div>
+            </div>
+         </aside>
+
+         <!-- Main Content Area -->
+         <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+            <!-- Mobile Header -->
+            <header class="md:hidden glass-card mx-4 mt-4 mb-2 p-4 flex items-center justify-between z-30">
+               <div class="flex items-center gap-3">
+                  <div
+                     class="w-8 h-8 bg-gradient-to-br from-brand-500 to-brand-700 rounded-lg flex items-center justify-center text-white shadow-sm">
+                     <i class="fas fa-chart-pie text-sm"></i>
+                  </div>
+                  <h1 class="font-poppins font-bold text-lg text-slate-800 tracking-tight">KeuanganKu</h1>
+               </div>
+               <button onclick="toggleMobileMenu()" class="text-slate-600 p-1"><i
+                     class="fas fa-bars text-xl"></i></button>
+            </header>
+
+            <!-- Mobile Menu Dropdown (Slide-in) -->
+            <div id="mobile-menu" class="md:hidden fixed inset-0 z-40 hidden">
+               <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" onclick="toggleMobileMenu()"></div>
+               <div
+                  class="absolute top-20 left-4 right-4 glass-card p-2 flex flex-col gap-1 shadow-2xl origin-top animate-[fadeInSlideUp_0.2s_ease-out]">
+                  <button onclick="nav('dashboard'); toggleMobileMenu()"
+                     class="p-3.5 px-4 font-semibold text-slate-700 rounded-xl hover:bg-slate-50 text-left flex items-center gap-3"><i
+                        class="fas fa-home w-5 text-slate-400"></i> Dashboard Utama</button>
+                  <button onclick="nav('input'); toggleMobileMenu()"
+                     class="p-3.5 px-4 font-semibold text-slate-700 rounded-xl hover:bg-slate-50 text-left flex items-center gap-3"><i
+                        class="fas fa-plus-square w-5 text-slate-400"></i> Input Transaksi</button>
+                  <button onclick="nav('history'); toggleMobileMenu()"
+                     class="p-3.5 px-4 font-semibold text-slate-700 rounded-xl hover:bg-slate-50 text-left flex items-center gap-3"><i
+                        class="fas fa-list-alt w-5 text-slate-400"></i> Riwayat Data</button>
+                  <button onclick="nav('reports'); toggleMobileMenu()"
+                     class="p-3.5 px-4 font-semibold text-slate-700 rounded-xl hover:bg-slate-50 text-left flex items-center gap-3"><i
+                        class="fas fa-chart-bar w-5 text-slate-400"></i> Laporan Grafik</button>
+                  <div class="h-px bg-slate-200 mx-4 my-1"></div>
+                  <button onclick="logout()"
+                     class="p-3.5 px-4 font-bold text-danger rounded-xl hover:bg-rose-50 text-left flex items-center gap-3"><i
+                        class="fas fa-sign-out-alt w-5"></i> Keluar</button>
+               </div>
+            </div>
+
+            <!-- Scrollable Pages Content -->
+            <div class="flex-1 overflow-y-auto px-4 py-6 md:p-8 lg:p-10 w-full">
+
+               <!-- DASHBOARD VIEW -->
+               <section id="view-dashboard" class="view-section active w-full max-w-7xl mx-auto">
+                  <div class="mb-6 md:mb-8">
+                     <h2 class="font-poppins font-bold text-2xl md:text-3xl lg:text-4xl text-slate-800 tracking-tight">
+                        Dashboard</h2>
+                     <p class="text-slate-500 mt-1 md:mt-2 text-sm md:text-base font-medium">Ringkasan finansial Anda
+                        bulan <span id="dash-month-name" class="text-brand-600 font-bold">Ini</span>.</p>
+                  </div>
+
+                  <!-- Summary Cards -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+                     <!-- Saldo Card -->
+                     <div
+                        class="glass-card p-5 md:p-6 lg:p-8 relative overflow-hidden group border-b-[5px] border-b-brand-500">
+                        <div
+                           class="absolute -right-8 -top-8 w-24 h-24 bg-brand-500/10 rounded-full blur-2xl group-hover:scale-[2] transition-transform duration-700">
+                        </div>
+                        <div class="flex items-center gap-3 mb-3 md:mb-4">
+                           <div
+                              class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 shrink-0">
+                              <i class="fas fa-wallet text-sm md:text-base"></i>
+                           </div>
+                           <p class="text-slate-500 text-sm md:text-base font-semibold leading-tight">Sisa Saldo
+                              <br><span class="text-xs font-normal">(Bulan Ini)</span>
+                           </p>
+                        </div>
+                        <h3 class="font-poppins font-bold text-2xl lg:text-3xl xl:text-4xl text-slate-800 truncate"
+                           id="card-saldo" title="Rp 0">Rp 0</h3>
+                     </div>
+
+                     <!-- Pemasukan Card -->
+                     <div
+                        class="glass-card p-5 md:p-6 lg:p-8 relative overflow-hidden group border-b-[5px] border-b-success">
+                        <div
+                           class="absolute -right-8 -top-8 w-24 h-24 bg-success/10 rounded-full blur-2xl group-hover:scale-[2] transition-transform duration-700">
+                        </div>
+                        <div class="flex items-center gap-3 mb-3 md:mb-4">
+                           <div
+                              class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-success shrink-0">
+                              <i class="fas fa-arrow-down text-sm md:text-base"></i>
+                           </div>
+                           <p class="text-slate-500 text-sm md:text-base font-semibold leading-tight">Total Masuk
+                              <br><span class="text-xs font-normal">(Bulan Ini)</span>
+                           </p>
+                        </div>
+                        <h3 class="font-poppins font-bold text-2xl lg:text-3xl xl:text-4xl text-success truncate"
+                           id="card-masuk" title="Rp 0">Rp 0</h3>
+                     </div>
+
+                     <!-- Pengeluaran Card -->
+                     <div
+                        class="glass-card p-5 md:p-6 lg:p-8 relative overflow-hidden group border-b-[5px] border-b-danger sm:col-span-2 lg:col-span-1">
+                        <div
+                           class="absolute -right-8 -top-8 w-24 h-24 bg-danger/10 rounded-full blur-2xl group-hover:scale-[2] transition-transform duration-700">
+                        </div>
+                        <div class="flex items-center gap-3 mb-3 md:mb-4">
+                           <div
+                              class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-danger shrink-0">
+                              <i class="fas fa-arrow-up text-sm md:text-base"></i>
+                           </div>
+                           <p class="text-slate-500 text-sm md:text-base font-semibold leading-tight">Total Keluar
+                              <br><span class="text-xs font-normal">(Bulan Ini)</span>
+                           </p>
+                        </div>
+                        <h3 class="font-poppins font-bold text-2xl lg:text-3xl xl:text-4xl text-danger truncate"
+                           id="card-keluar" title="Rp 0">Rp 0</h3>
+                     </div>
+                  </div>
+
+                  <!-- Bottom Grid -->
+                  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                     <!-- Chart Area -->
+                     <div class="xl:col-span-2 glass-card p-5 md:p-6 lg:p-8">
+                        <h3 class="font-poppins font-bold text-lg md:text-xl mb-4 md:mb-6 text-slate-800">Arus Kas (6
+                           Bulan Terakhir)</h3>
+                        <div class="w-full relative h-[250px] sm:h-[300px] lg:h-[350px]">
+                           <canvas id="chart-arus-kas"></canvas>
+                        </div>
+                     </div>
+
+                     <!-- Recent Transactions -->
+                     <div class="glass-card p-5 md:p-6 lg:p-8 flex flex-col h-[400px] xl:h-auto">
+                        <div class="flex justify-between items-center mb-4 md:mb-6 shrink-0">
+                           <h3 class="font-poppins font-bold text-lg md:text-xl text-slate-800">Aktivitas Baru</h3>
+                           <button onclick="nav('history')"
+                              class="text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">Lihat
+                              Semua</button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-thin" id="recent-list">
+                           <!-- JS Injected Data -->
+                        </div>
+                     </div>
+                  </div>
+               </section>
+
+               <!-- INPUT VIEW -->
+               <section id="view-input" class="view-section w-full max-w-4xl mx-auto">
+                  <div class="mb-6 md:mb-8">
+                     <h2 class="font-poppins font-bold text-2xl md:text-3xl lg:text-4xl text-slate-800 tracking-tight">
+                        Input Data</h2>
+                     <p class="text-slate-500 mt-1 md:mt-2 text-sm md:text-base font-medium">Catat transaksi baru Anda
+                        ke dalam database (GSheets).</p>
+                  </div>
+
+                  <div class="glass-card p-6 md:p-8 lg:p-10">
+                     <form id="form-input" class="space-y-6 md:space-y-8">
+
+                        <!-- Jenis Radio -->
+                        <div>
+                           <label class="block text-sm md:text-base font-bold text-slate-700 mb-3 md:mb-4">Jenis
+                              Transaksi</label>
+                           <div class="grid grid-cols-2 gap-3 md:gap-5">
+                              <label class="cursor-pointer relative">
+                                 <input type="radio" name="jenis" value="Pemasukan" class="peer sr-only" checked>
+                                 <div
+                                    class="p-4 md:p-6 rounded-2xl border-2 border-slate-100/80 text-center peer-checked:border-success peer-checked:bg-emerald-50/50 transition-all hover:bg-slate-50/50 group">
+                                    <div
+                                       class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-100 text-success flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl group-hover:scale-110 transition-transform">
+                                       <i class="fas fa-hand-holding-usd"></i>
+                                    </div>
+                                    <p class="font-bold text-slate-700 text-sm md:text-lg">Pemasukan</p>
+                                 </div>
+                              </label>
+                              <label class="cursor-pointer relative">
+                                 <input type="radio" name="jenis" value="Pengeluaran" class="peer sr-only">
+                                 <div
+                                    class="p-4 md:p-6 rounded-2xl border-2 border-slate-100/80 text-center peer-checked:border-danger peer-checked:bg-rose-50/50 transition-all hover:bg-slate-50/50 group">
+                                    <div
+                                       class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-rose-100 text-danger flex items-center justify-center mx-auto mb-2 md:mb-3 text-lg md:text-xl group-hover:scale-110 transition-transform">
+                                       <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <p class="font-bold text-slate-700 text-sm md:text-lg">Pengeluaran</p>
+                                 </div>
+                              </label>
+                           </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                           <div>
+                              <label class="block text-sm md:text-base font-bold text-slate-700 mb-2">Tanggal</label>
+                              <input type="date" id="in-tanggal" required
+                                 class="neu-input w-full px-4 py-3 md:py-3.5 rounded-xl text-slate-700 font-semibold text-sm md:text-base">
+                           </div>
+                           <div>
+                              <label class="block text-sm md:text-base font-bold text-slate-700 mb-2">Kategori</label>
+                              <select id="in-kategori" required
+                                 class="neu-input w-full px-4 py-3 md:py-3.5 rounded-xl text-slate-700 font-semibold text-sm md:text-base">
+                                 <option value="" disabled selected>Pilih Kategori...</option>
+                                 <optgroup label="Pemasukan">
+                                    <option value="Gaji">Gaji / Upah</option>
+                                    <option value="Bonus">Bonus / Hadiah</option>
+                                    <option value="Investasi Masuk">Hasil Investasi</option>
+                                    <option value="Lainnya (Masuk)">Lain-lain (Masuk)</option>
+                                 </optgroup>
+                                 <optgroup label="Pengeluaran">
+                                    <option value="Makanan">Makanan & Minuman</option>
+                                    <option value="Transportasi">Transportasi</option>
+                                    <option value="Belanja">Belanja Pribadi</option>
+                                    <option value="Tagihan">Tagihan & Cicilan</option>
+                                    <option value="Hiburan">Hiburan / Rekreasi</option>
+                                    <option value="Kesehatan">Kesehatan</option>
+                                    <option value="Lainnya (Keluar)">Lain-lain (Keluar)</option>
+                                 </optgroup>
+                              </select>
+                           </div>
+                        </div>
+
+                        <div>
+                           <label class="block text-sm md:text-base font-bold text-slate-700 mb-2">Jumlah
+                              (Nominal)</label>
+                           <div class="relative flex items-center">
+                              <span
+                                 class="absolute left-5 font-bold text-slate-400 text-lg md:text-xl pointer-events-none">Rp</span>
+                              <!-- Padding left increased to 12 or 14 to avoid text overlap with "Rp" -->
+                              <input type="number" id="in-jumlah" required min="1" placeholder="0"
+                                 class="neu-input w-full pl-14 md:pl-16 pr-5 py-3.5 md:py-4 rounded-xl text-xl md:text-2xl font-poppins font-bold text-slate-800">
+                           </div>
+                        </div>
+
+                        <div>
+                           <label class="block text-sm md:text-base font-bold text-slate-700 mb-2">Keterangan
+                              Tambahan</label>
+                           <textarea id="in-keterangan" rows="2" placeholder="Catatan (Opsional)..."
+                              class="neu-input w-full px-4 py-3 rounded-xl text-slate-700 font-medium resize-none text-sm md:text-base"></textarea>
+                        </div>
+
+                        <div class="pt-2 md:pt-4">
+                           <button type="submit" id="btn-submit-tx"
+                              class="btn-depth-primary w-full py-3.5 md:py-4 rounded-xl font-poppins font-bold text-lg md:text-xl flex items-center justify-center gap-2">
+                              <span class="btn-text"><i class="fas fa-save mr-2"></i> Simpan Transaksi</span>
+                              <div class="loader"></div>
+                           </button>
+                        </div>
+                     </form>
+                  </div>
+               </section>
+
+               <!-- HISTORY VIEW -->
+               <section id="view-history" class="view-section w-full max-w-6xl mx-auto">
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-6 md:mb-8 gap-4">
+                     <div>
+                        <h2
+                           class="font-poppins font-bold text-2xl md:text-3xl lg:text-4xl text-slate-800 tracking-tight">
+                           Riwayat Transaksi</h2>
+                        <p class="text-slate-500 mt-1 md:mt-2 text-sm md:text-base font-medium">Data arsip yang
+                           tersimpan di sistem.</p>
+                     </div>
+                     <div class="flex flex-wrap gap-2 md:gap-3">
+                        <select id="filter-bulan"
+                           class="neu-input px-3 py-2 rounded-xl text-xs md:text-sm font-bold text-slate-600 flex-1 md:flex-none"
+                           onchange="renderHistory()">
+                           <option value="all">Semua Bulan</option>
+                           <option value="01">Januari</option>
+                           <option value="02">Februari</option>
+                           <option value="03">Maret</option>
+                           <option value="04">April</option>
+                           <option value="05">Mei</option>
+                           <option value="06">Juni</option>
+                           <option value="07">Juli</option>
+                           <option value="08">Agustus</option>
+                           <option value="09">September</option>
+                           <option value="10">Oktober</option>
+                           <option value="11">November</option>
+                           <option value="12">Desember</option>
+                        </select>
+                        <select id="filter-tahun"
+                           class="neu-input px-3 py-2 rounded-xl text-xs md:text-sm font-bold text-slate-600 w-24 md:w-auto"
+                           onchange="renderHistory()">
+                           <!-- JS Injected -->
+                        </select>
+                     </div>
+                  </div>
+
+                  <div class="glass-card overflow-hidden">
+                     <div class="overflow-x-auto scrollbar-thin">
+                        <table class="w-full text-left border-collapse min-w-[600px]">
+                           <thead>
+                              <tr class="bg-slate-50/80 border-b border-slate-200/60">
+                                 <th class="py-4 px-5 font-bold text-slate-500 text-xs md:text-sm tracking-wider">
+                                    TANGGAL</th>
+                                 <th class="py-4 px-5 font-bold text-slate-500 text-xs md:text-sm tracking-wider">
+                                    KATEGORI</th>
+                                 <th class="py-4 px-5 font-bold text-slate-500 text-xs md:text-sm tracking-wider">
+                                    KETERANGAN</th>
+                                 <th
+                                    class="py-4 px-5 font-bold text-slate-500 text-xs md:text-sm tracking-wider text-right">
+                                    JUMLAH</th>
+                              </tr>
+                           </thead>
+                           <tbody id="table-history" class="divide-y divide-slate-100/60">
+                              <!-- JS Injected -->
+                           </tbody>
+                        </table>
+                     </div>
+                     <div id="empty-history" class="hidden p-10 md:p-16 text-center">
+                        <div
+                           class="w-16 h-16 md:w-20 md:h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-300 text-2xl md:text-3xl mb-4">
+                           <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h3 class="font-poppins font-bold text-lg md:text-xl text-slate-700">Tidak ada data</h3>
+                        <p class="text-slate-500 text-sm md:text-base font-medium mt-1">Belum ada transaksi pada periode
+                           terpilih.</p>
+                     </div>
+                  </div>
+               </section>
+
+               <!-- REPORTS VIEW -->
+               <section id="view-reports" class="view-section w-full max-w-6xl mx-auto">
+                  <div class="mb-6 md:mb-8">
+                     <h2 class="font-poppins font-bold text-2xl md:text-3xl lg:text-4xl text-slate-800 tracking-tight">
+                        Laporan & Grafik</h2>
+                     <p class="text-slate-500 mt-1 md:mt-2 text-sm md:text-base font-medium">Analisis komposisi
+                        finansial Anda secara visual.</p>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                     <!-- Chart Pengeluaran -->
+                     <div class="glass-card p-5 md:p-8">
+                        <h3 class="font-poppins font-bold text-lg md:text-xl mb-4 md:mb-6 text-center text-slate-800">
+                           Komposisi Pengeluaran</h3>
+                        <div class="w-full max-w-[240px] md:max-w-[280px] mx-auto aspect-square relative">
+                           <canvas id="chart-pengeluaran"></canvas>
+                        </div>
+                     </div>
+                     <!-- Chart Pemasukan -->
+                     <div class="glass-card p-5 md:p-8">
+                        <h3 class="font-poppins font-bold text-lg md:text-xl mb-4 md:mb-6 text-center text-slate-800">
+                           Komposisi Pemasukan</h3>
+                        <div class="w-full max-w-[240px] md:max-w-[280px] mx-auto aspect-square relative">
+                           <canvas id="chart-pemasukan"></canvas>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+
+            </div>
+         </main>
+      </div>
+
+      <!-- MAIN JAVASCRIPT LOGIC -->
+      <script src="script.js"></script>
+      <script src="service-worker.js"></script>
+      <script src="main.js"></script>
+      <script lang="JAVASCRIPT">
+         // PWA Installation handling
+         let deferredPrompt;
+         window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBanner = document.getElementById('installBanner');
+            if (installBanner) installBanner.style.display = 'flex';
+         });
+
+         document.getElementById('installBtn').addEventListener('click', async () => {
+            document.getElementById('installBanner').style.display = 'none';
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response: ${outcome}`);
+            deferredPrompt = null;
+         });
+
+         window.addEventListener('appinstalled', (event) => {
+            console.log('App was installed to home screen');
+         });
+      </script>
+   </body>
+
+</html>
