@@ -13,6 +13,7 @@ const fRupiah = (num) =>
     currency: 'IDR',
     minimumFractionDigits: 0,
   }).format(num)
+
 const fDate = (dStr) =>
   new Date(dStr).toLocaleDateString('id-ID', {
     year: 'numeric',
@@ -70,9 +71,7 @@ async function mockEngine(action, data) {
       return { status: 'error', message: 'Email sudah terdaftar.' }
     users.push({
       ...data,
-      Timestamp: new Date()
-        .toLocaleString('id-ID', options)
-        .replace(/\./g, ':'),
+      Timestamp: new Date().toLocaleString('sv-SE', options),
     })
     localStorage.setItem('aww_mock_users', JSON.stringify(users))
     return { status: 'success', message: 'Akun berhasil didaftarkan.' }
@@ -89,7 +88,7 @@ async function mockEngine(action, data) {
     const newTx = {
       ID: 'TX' + Date.now(),
       ...data,
-      Timestamp: new Date().toISOString(),
+      Timestamp: new Date().toLocaleString('sv-SE', options),
     }
     txs.push(newTx)
     localStorage.setItem('aww_mock_txs', JSON.stringify(txs))
