@@ -88,7 +88,7 @@ function registerUser(data) {
 
   // Menggunakan sv-SE untuk format YYYY-MM-DD HH:mm:ss
   const timestamp = new Date()
-    .toLocaleString('id-ID', options)
+    .toLocaleDateString('id-ID', options)
     .replace(/\./g, ':')
 
   sheet.appendRow([data.Email, data.Nama, data.Password, timestamp])
@@ -133,7 +133,21 @@ function addTransaction(data) {
     }
 
   const txId = 'TX' + new Date().getTime()
-  const timestamp = new Date().toISOString()
+
+  // Solusi JavaScript Umum
+  const options = {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+
+ // Menggunakan sv-SE untuk format YYYY-MM-DD HH:mm:ss
+ const timestamp = new Date().toLocaleDateString('id-ID', options);
 
   // Susunan Data: ID, Email, Tanggal, Bulan, Tahun, Jenis, Kategori, Keterangan, Jumlah, Timestamp
   sheet.appendRow([
