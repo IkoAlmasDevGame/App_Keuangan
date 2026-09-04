@@ -16,9 +16,9 @@ const fRupiah = (num) =>
 
 const fDate = (dStr) =>
   new Date(dStr).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'short',
     year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   })
 
 // ==========================================
@@ -71,7 +71,7 @@ async function mockEngine(action, data) {
       return { status: 'error', message: 'Email sudah terdaftar.' }
     users.push({
       ...data,
-      Timestamp: new Date().toLocaleString('sv-SE', options),
+      Timestamp: new Date().toLocaleDateString('id-ID', options),
     })
     localStorage.setItem('aww_mock_users', JSON.stringify(users))
     return { status: 'success', message: 'Akun berhasil didaftarkan.' }
@@ -88,7 +88,7 @@ async function mockEngine(action, data) {
     const newTx = {
       ID: 'TX' + Date.now(),
       ...data,
-      Timestamp: new Date().toLocaleString('sv-SE', options),
+      Timestamp: new Date().toLocaleDateString('id-ID', options),
     }
     txs.push(newTx)
     localStorage.setItem('aww_mock_txs', JSON.stringify(txs))
