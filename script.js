@@ -16,9 +16,9 @@ const fRupiah = (num) =>
 
 const fDate = (dStr) =>
   new Date(dStr).toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'short',
     day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   })
 
 // ==========================================
